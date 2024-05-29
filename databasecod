@@ -1,0 +1,104 @@
+Table sexos {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    sexo VARCHAR(10) [not null, unique] // Sexo: 'masculino' o 'femenino'
+}
+
+Table usuarios {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    nombre VARCHAR(100) [not null]
+    email VARCHAR(100) [unique, not null]
+    contraseña VARCHAR(255) [not null]
+    tipo_usuario VARCHAR(20) [not null] // 'cliente' o 'administrador'
+    sexo_id INT [not null] // Referencia a la tabla de sexos
+    fecha_registro TIMESTAMP [default: `current_timestamp`]
+}
+
+Table programas {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    nombre VARCHAR(100) [not null]
+    descripcion TEXT [not null]
+}
+
+Table donaciones {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    usuario_id INT [not null] // Referencia a la tabla de usuarios
+    programa_id INT [not null] // Referencia a la tabla de programas
+    monto DECIMAL(10, 2) [not null]
+    fecha_donacion TIMESTAMP [default: `current_timestamp`]
+}
+
+Table detalle_donaciones_salud {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    donacion_id INT [not null] // Referencia a la tabla de donaciones
+    tipo_servicio VARCHAR(20) [not null] // 'Salud General', 'Nutrición', 'Dental', 'Atención Psicológica'
+    comentario TEXT // Comentarios adicionales sobre la donación
+}
+
+Table detalle_donacion_Dental {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario TEXT
+}
+
+Table detalle_donacion_psicologica {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario TEXT
+}
+
+Table detalle_donacion_infantil {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+
+Table detalle_donacion_alimentacion {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+
+Table detalle_donacion_educacion {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+
+Table detalle_donacion_oftecnicos {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+
+Table detalle_donacion_edufinanciera {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+
+Table detalle_donacion_juridica {
+  id int [pk, increment]
+  donacion_id int [not null]
+  tipo_servicio varchar(20) [not null]
+  comentario text
+}
+// Definición de referencias
+Ref: usuarios.sexo_id > sexos.id
+Ref: donaciones.usuario_id > usuarios.id
+Ref: donaciones.programa_id > programas.id
+Ref: detalle_donaciones_salud.donacion_id > donaciones.id
+Ref: detalle_donacion_Dental.donacion_id > donaciones.id
+Ref: detalle_donacion_psicologica.donacion_id > donaciones.id
+Ref: detalle_donacion_infantil.donacion_id > donaciones.id
+Ref: detalle_donacion_alimentacion.donacion_id > donaciones.id
+Ref: detalle_donacion_educacion.donacion_id > donaciones.id
+Ref: detalle_donacion_oftecnicos.donacion_id > donaciones.id
+Ref: detalle_donacion_edufinanciera.donacion_id > donaciones.id
+Ref: detalle_donacion_juridica.donacion_id > donaciones.id
