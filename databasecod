@@ -5,63 +5,63 @@ Table sexos {
 
 Table profesion {
   id int [pk, increment]
-  nombre varchar(100) [not null]
-  profesion varchar(100) [not null]
+  nombre varchar(100) [not null, unique]
 }
 
 Table pais {
   id int [pk, increment]
-  pais varchar(100) [not null]
+  nombre varchar(100) [not null, unique]
 }
 
 Table numero {
   id int [pk, increment]
-  numerotel varchar(50) [not null]
+  numerotel varchar(50) [not null, unique]
 }
 
 Table nit {
   id int [pk, increment]
-  nit int(50) [not null]
+  numero varchar(50) [not null, unique]
 }
 
 Table direccion {
   id int [pk, increment]
-  dir varchar(50) [not null]
+  descripcion varchar(255) [not null]
+}
+
+Table roles {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    rol VARCHAR(20) [not null, unique] // 'administrador' o 'donante'
 }
 
 Table usuarios {
     id INT [pk, increment] // Llave primaria con auto-incremento
     nombre VARCHAR(100) [not null]
-    numero int(50) [not null, unique]
-    profesion varchar [not null]
-    Pais varchar(100) [not null]
-    Direccion varchar(50) [not null]
+    numero_id INT [not null, unique] // Referencia a la tabla de numero
+    profesion_id INT [not null] // Referencia a la tabla de profesion
+    pais_id INT [not null] // Referencia a la tabla de pais
+    direccion_id INT [not null] // Referencia a la tabla de direccion
     email VARCHAR(100) [unique, not null]
-    nit int(50) [not null]
+    nit_id INT [not null] // Referencia a la tabla de nit
     contraseña VARCHAR(255) [not null]
-    tipo_usuario VARCHAR(20) [not null] // 'cliente' o 'administrador'
-    sexo_id varchar(10) [not null] // Referencia a la tabla de sexos
+    sexo_id INT [not null] // Referencia a la tabla de sexos
+    rol_id INT [not null] // Referencia a la tabla de roles
     fecha_registro TIMESTAMP [default: `current_timestamp`]
     ultima_sesion TIMESTAMP // Última sesión del usuario
-}
-
-Table programas {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    nombre VARCHAR(100) [not null]
-    descripcion TEXT [not null]
 }
 
 Table donaciones {
     id INT [pk, increment] // Llave primaria con auto-incremento
     usuario_id INT [not null] // Referencia a la tabla de usuarios
-    programa_id INT [not null] // Referencia a la tabla de programas
     monto DECIMAL(10, 2) [not null]
     fecha_donacion TIMESTAMP [default: `current_timestamp`]
+    voucher VARBINARY(2048) [not null]
 }
 
 Table detalle_donaciones {
     id INT [pk, increment] // Llave primaria con auto-incremento
     donacion_id INT [not null] // Referencia a la tabla de donaciones
+    programa_nombre VARCHAR(100) [not null] // Nombre del programa
+    descripcion_programa TEXT [not null] // Descripción del programa
     tipo_servicio VARCHAR(20) [not null] // Tipo de servicio de la donación
     categoria ENUM('Salud', 'Dental', 'Psicologica', 'Infantil', 'Alimentacion', 'Educacion', 'Oficios Tecnicos', 'Educacion Financiera', 'Juridica') [not null] // Categoría de la donación
     comentario TEXT // Comentarios adicionales sobre la donación
@@ -79,24 +79,14 @@ Table tokens_acceso {
     estado ENUM('activo', 'revocado') [default: 'activo']
 }
 
-Table tokens_actualizacion {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT [not null] // Referencia a la tabla de usuarios
-    token VARCHAR(500) [not null]
-    fecha_emision TIMESTAMP [default: `current_timestamp`]
-    fecha_expiracion TIMESTAMP [not null]
-    estado ENUM('activo', 'revocado') [default: 'activo']
-}
-
 // Definición de referencias
-Ref: usuarios.Direccion > direccion.id
-Ref: usuarios.nit > nit.id
-Ref: usuarios.numero > numero.numerotel
-Ref: usuarios.Pais > pais.id
-Ref: usuarios.profesion > profesion.id
+Ref: usuarios.numero_id > numero.id
+Ref: usuarios.profesion_id > profesion.id
+Ref: usuarios.pais_id > pais.id
+Ref: usuarios.direccion_id > direccion.id
+Ref: usuarios.nit_id > nit.id
 Ref: usuarios.sexo_id > sexos.id
+Ref: usuarios.rol_id > roles.id
 Ref: donaciones.usuario_id > usuarios.id
-Ref: donaciones.programa_id > programas.id
 Ref: detalle_donaciones.donacion_id > donaciones.id
 Ref: tokens_acceso.usuario_id > usuarios.id
-Ref: tokens_actualizacion.usuario_id > usuarios.id
