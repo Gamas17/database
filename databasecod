@@ -1,4 +1,4 @@
-Table sexos {
+Table sexo {
     id INT [pk, increment] // Llave primaria con auto-incremento
     sexo VARCHAR(10) [not null, unique] // Sexo: 'masculino' o 'femenino'
 }
@@ -13,7 +13,7 @@ Table pais {
   nombre varchar(100) [not null, unique]
 }
 
-Table numero {
+Table telefono {
   id int [pk, increment]
   numerotel varchar(50) [not null, unique]
 }
@@ -28,38 +28,38 @@ Table direccion {
   descripcion varchar(255) [not null]
 }
 
-Table roles {
+Table rol {
     id INT [pk, increment] // Llave primaria con auto-incremento
     rol VARCHAR(20) [not null, unique] // 'administrador' o 'donante'
 }
 
-Table usuarios {
+Table usuario {
     id INT [pk, increment] // Llave primaria con auto-incremento
     nombre VARCHAR(100) [not null]
-    numero_id INT [not null, unique] // Referencia a la tabla de numero
+    numero_id INT [not null, unique] // Referencia a la tabla de telefono
     profesion_id INT [not null] // Referencia a la tabla de profesion
     pais_id INT [not null] // Referencia a la tabla de pais
     direccion_id INT [not null] // Referencia a la tabla de direccion
     email VARCHAR(100) [unique, not null]
     nit_id INT [not null] // Referencia a la tabla de nit
     contraseña VARCHAR(255) [not null]
-    sexo_id INT [not null] // Referencia a la tabla de sexos
-    rol_id INT [not null] // Referencia a la tabla de roles
+    sexo_id INT [not null] // Referencia a la tabla de sexo
+    rol_id INT [not null] // Referencia a la tabla de rol
     fecha_registro TIMESTAMP [default: `current_timestamp`]
     ultima_sesion TIMESTAMP // Última sesión del usuario
 }
 
-Table donaciones {
+Table donacion {
     id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT [not null] // Referencia a la tabla de usuarios
+    usuario_id INT [not null] // Referencia a la tabla de usuario
     monto DECIMAL(10, 2) [not null]
     fecha_donacion TIMESTAMP [default: `current_timestamp`]
     voucher VARBINARY(2048) [not null]
 }
 
-Table detalle_donaciones {
+Table detalle_donacion {
     id INT [pk, increment] // Llave primaria con auto-incremento
-    donacion_id INT [not null] // Referencia a la tabla de donaciones
+    donacion_id INT [not null] // Referencia a la tabla de donacion
     programa_nombre VARCHAR(100) [not null] // Nombre del programa
     descripcion_programa TEXT [not null] // Descripción del programa
     tipo_servicio VARCHAR(20) [not null] // Tipo de servicio de la donación
@@ -70,23 +70,37 @@ Table detalle_donaciones {
     fecha_detalle TIMESTAMP [default: `current_timestamp`] // Fecha del detalle de la donación
 }
 
-Table tokens_acceso {
+Table token_acceso {
     id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT [not null] // Referencia a la tabla de usuarios
+    usuario_id INT [not null] // Referencia a la tabla de usuario
     token VARCHAR(500) [not null]
     fecha_emision TIMESTAMP [default: `current_timestamp`]
     fecha_expiracion TIMESTAMP [not null]
     estado ENUM('activo', 'revocado') [default: 'activo']
 }
 
+Table permiso {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    nombre VARCHAR(50) [not null, unique] // Nombre del permiso (e.g., 'crear_usuario', 'ver_donacion', etc.)
+    descripcion TEXT // Descripción del permiso
+}
+
+Table rol_permiso {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    rol_id INT [not null] // Referencia a la tabla de rol
+    permiso_id INT [not null] // Referencia a la tabla de permiso
+}
+
 // Definición de referencias
-Ref: usuarios.numero_id > numero.id
-Ref: usuarios.profesion_id > profesion.id
-Ref: usuarios.pais_id > pais.id
-Ref: usuarios.direccion_id > direccion.id
-Ref: usuarios.nit_id > nit.id
-Ref: usuarios.sexo_id > sexos.id
-Ref: usuarios.rol_id > roles.id
-Ref: donaciones.usuario_id > usuarios.id
-Ref: detalle_donaciones.donacion_id > donaciones.id
-Ref: tokens_acceso.usuario_id > usuarios.id
+Ref: usuario.numero_id > telefono.id
+Ref: usuario.profesion_id > profesion.id
+Ref: usuario.pais_id > pais.id
+Ref: usuario.direccion_id > direccion.id
+Ref: usuario.nit_id > nit.id
+Ref: usuario.sexo_id > sexo.id
+Ref: usuario.rol_id > rol.id
+Ref: donacion.usuario_id > usuario.id
+Ref: detalle_donacion.donacion_id > donacion.id
+Ref: token_acceso.usuario_id > usuario.id
+Ref: rol_permiso.rol_id > rol.id
+Ref: rol_permiso.permiso_id > permiso.id
