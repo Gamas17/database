@@ -1,0 +1,143 @@
+
+Table "sexo" {
+  "id" INT [pk, increment]
+  "sexo" VARCHAR(10) [unique, not null]
+}
+
+Table "profesion" {
+  "id" int [pk, increment]
+  "nombre" varchar(100) [unique, not null]
+}
+
+Table "pais" {
+  "id" int [pk, increment]
+  "nombre" varchar(100) [unique, not null]
+}
+
+Table "telefonoTipo" {
+  "id" int [pk, increment]
+  "tipo" nvarchar(25) [not null]
+}
+
+Table "direccion" {
+  "id" int [pk, increment]
+  "descripcion" varchar(255) [not null]
+}
+
+Table "rol" {
+  "id" INT [pk, increment]
+  "rol" VARCHAR(20) [unique, not null]
+}
+
+Table "usuario" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [not null]
+  "telefonoTipo_id" INT [not null]
+  "telefono" INT
+  "profesion_id" INT [not null]
+  "pais_id" INT [not null]
+  "direccion_id" INT [not null]
+  "email" VARCHAR(100) [unique, not null]
+  "NIT" INT [not null]
+  "contraseña" VARCHAR(255) [not null]
+  "sexo_id" INT [not null]
+  "rol_id" INT [not null]
+  "fecha_registro" datetime
+}
+
+Table "donacion" {
+  "id" INT [pk, increment]
+  "usuario_id" INT [not null]
+  "monto" DECIMAL(10,2) [not null]
+  "fecha_donacion" datetime
+  "voucher" VARBINARY(2048) [not null]
+}
+
+Table "detalle_donacion" {
+  "id" INT [pk, increment]
+  "donacion_id" INT [not null]
+  "id_programa" INT [not null]
+  "tipo_servicio" INT [not null]
+  "comentario" TEXT
+  "cantidad" INT
+  "fecha_detalle" datetime
+}
+
+Table "programa" {
+  "id" INT [pk, increment]
+  "descripcion" varchar(100)
+}
+
+Table "servicio" {
+  "id" INT [pk, increment]
+  "descripcion" varchar(100)
+}
+
+Table "token_acceso" {
+  "id" INT [pk, increment]
+  "usuario_id" INT [not null]
+  "token" VARCHAR(500) [not null]
+  "fecha_emision" datetime
+  "fecha_expiracion" datetime [not null]
+  "estado" INT [not null]
+}
+
+Table "permiso" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(50) [unique, not null]
+  "descripcion" TEXT
+}
+
+Table "rol_permiso" {
+  "id" INT [pk, increment]
+  "rol_id" INT [not null]
+  "permiso_id" INT [not null]
+}
+
+Table "contacto" {
+  "id" INT [pk, increment]
+  "usuario_id" INT
+  "nombre_cliente" VARCHAR(100) [not null]
+  "email_cliente" VARCHAR(100) [not null]
+  "asunto" VARCHAR(100) [not null]
+  "mensaje" TEXT [not null]
+  "fecha_envio" datetime
+}
+
+Table "testimonio" {
+  "id" INT [pk, increment]
+  "usuario_id" INT
+  "nombre_autor" VARCHAR(100) [not null]
+  "contenido" TEXT [not null]
+  "fecha_envio" datetime
+}
+
+Ref:"telefonoTipo"."id" < "usuario"."telefonoTipo_id"
+
+Ref:"profesion"."id" < "usuario"."profesion_id"
+
+Ref:"pais"."id" < "usuario"."pais_id"
+
+Ref:"direccion"."id" < "usuario"."direccion_id"
+
+Ref:"sexo"."id" < "usuario"."sexo_id"
+
+Ref:"rol"."id" < "usuario"."rol_id"
+
+Ref:"usuario"."id" < "donacion"."usuario_id"
+
+Ref:"donacion"."id" < "detalle_donacion"."donacion_id"
+
+Ref:"usuario"."id" < "token_acceso"."usuario_id"
+
+Ref:"rol"."id" < "rol_permiso"."rol_id"
+
+Ref:"permiso"."id" < "rol_permiso"."permiso_id"
+
+Ref:"usuario"."id" < "contacto"."usuario_id"
+
+Ref:"usuario"."id" < "testimonio"."usuario_id"
+
+Ref:"programa"."id" < "detalle_donacion"."id_programa"
+
+Ref:"servicio"."id" < "detalle_donacion"."tipo_servicio"
