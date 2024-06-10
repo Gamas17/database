@@ -15,12 +15,8 @@ Table pais {
 
 Table telefono {
   id int [pk, increment]
+  tipo ENUM('celular', 'casa') [not null] // Tipo de teléfono: 'celular' o 'casa'
   numerotel varchar(50) [not null, unique]
-}
-
-Table nit {
-  id int [pk, increment]
-  numero varchar(50) [not null, unique]
 }
 
 Table direccion {
@@ -36,7 +32,7 @@ Table rol {
 Table usuario {
     id INT [pk, increment] // Llave primaria con auto-incremento
     nombre VARCHAR(100) [not null]
-    numero_id INT [not null, unique] // Referencia a la tabla de telefono
+    telefono_id INT [not null] // Referencia a la tabla de telefono
     profesion_id INT [not null] // Referencia a la tabla de profesion
     pais_id INT [not null] // Referencia a la tabla de pais
     direccion_id INT [not null] // Referencia a la tabla de direccion
@@ -110,11 +106,10 @@ Table testimonio {
 }
 
 // Definición de referencias
-Ref: usuario.numero_id > telefono.id
+Ref: usuario.telefono_id > telefono.id
 Ref: usuario.profesion_id > profesion.id
 Ref: usuario.pais_id > pais.id
 Ref: usuario.direccion_id > direccion.id
-Ref: usuario.nit_id > nit.id
 Ref: usuario.sexo_id > sexo.id
 Ref: usuario.rol_id > rol.id
 Ref: donacion.usuario_id > usuario.id
