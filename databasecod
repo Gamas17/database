@@ -1,121 +1,173 @@
-Table sexo {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    sexo VARCHAR(10) [not null, unique] // Sexo: 'masculino' o 'femenino'
-}
+CREATE TABLE [sexo] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [sexo] VARCHAR(10) UNIQUE NOT NULL
+)
+GO
 
-Table profesion {
-  id int [pk, increment]
-  nombre varchar(100) [not null, unique]
-}
+CREATE TABLE [profesion] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [nombre] varchar(100) UNIQUE NOT NULL
+)
+GO
 
-Table pais {
-  id int [pk, increment]
-  nombre varchar(100) [not null, unique]
-}
+CREATE TABLE [pais] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [nombre] varchar(100) UNIQUE NOT NULL
+)
+GO
 
-Table telefono {
-  id int [pk, increment]
-  tipo ENUM('celular', 'casa') [not null] // Tipo de teléfono: 'celular' o 'casa'
-  numerotel varchar(50) [not null, unique]
-}
+CREATE TABLE [telefonoTipo] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [tipo] nvarchar(25) NOT NULL
+)
+GO
 
-Table direccion {
-  id int [pk, increment]
-  descripcion varchar(255) [not null]
-}
+CREATE TABLE [direccion] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [descripcion] varchar(255) NOT NULL
+)
+GO
 
-Table rol {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    rol VARCHAR(20) [not null, unique] // 'administrador' o 'donante'
-}
+CREATE TABLE [rol] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [rol] VARCHAR(20) UNIQUE NOT NULL
+)
+GO
 
-Table usuario {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    nombre VARCHAR(100) [not null]
-    telefono_id INT [not null] // Referencia a la tabla de telefono
-    profesion_id INT [not null] // Referencia a la tabla de profesion
-    pais_id INT [not null] // Referencia a la tabla de pais
-    direccion_id INT [not null] // Referencia a la tabla de direccion
-    email VARCHAR(100) [unique, not null]
-    nit_id INT [not null] // Referencia a la tabla de nit
-    contraseña VARCHAR(255) [not null]
-    sexo_id INT [not null] // Referencia a la tabla de sexo
-    rol_id INT [not null] // Referencia a la tabla de rol
-    fecha_registro TIMESTAMP [default: `current_timestamp`]
-    ultima_sesion TIMESTAMP // Última sesión del usuario
-}
+CREATE TABLE [usuario] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [nombre] VARCHAR(100) NOT NULL,
+  [telefonoTipo_id] INT NOT NULL,
+  [telefono] INT,
+  [profesion_id] INT NOT NULL,
+  [pais_id] INT NOT NULL,
+  [direccion_id] INT NOT NULL,
+  [email] VARCHAR(100) UNIQUE NOT NULL,
+  [NIT] INT NOT NULL,
+  [contraseña] VARCHAR(255) NOT NULL,
+  [sexo_id] INT NOT NULL,
+  [rol_id] INT NOT NULL,
+  [fecha_registro] datetime
+)
+GO
 
-Table donacion {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT [not null] // Referencia a la tabla de usuario
-    monto DECIMAL(10, 2) [not null]
-    fecha_donacion TIMESTAMP [default: `current_timestamp`]
-    voucher VARBINARY(2048) [not null]
-}
+CREATE TABLE [donacion] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [usuario_id] INT NOT NULL,
+  [monto] DECIMAL(10,2) NOT NULL,
+  [fecha_donacion] datetime ,
+  [voucher] VARBINARY(2048) NOT NULL
+)
+GO
 
-Table detalle_donacion {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    donacion_id INT [not null] // Referencia a la tabla de donacion
-    programa_nombre VARCHAR(100) [not null] // Nombre del programa
-    descripcion_programa TEXT [not null] // Descripción del programa
-    tipo_servicio VARCHAR(20) [not null] // Tipo de servicio de la donación
-    categoria ENUM('Salud', 'Dental', 'Psicologica', 'Infantil', 'Alimentacion', 'Educacion', 'Oficios Tecnicos', 'Educacion Financiera', 'Juridica') [not null] // Categoría de la donación
-    comentario TEXT // Comentarios adicionales sobre la donación
-    cantidad INT // Cantidad de elementos donados
-    descripcion_adicional TEXT // Información adicional específica de la donación
-    fecha_detalle TIMESTAMP [default: `current_timestamp`] // Fecha del detalle de la donación
-}
+CREATE TABLE [detalle_donacion] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [donacion_id] INT NOT NULL,
+  [id_programa] INT NOT NULL,
+  [tipo_servicio] INT NOT NULL,
+  [comentario] TEXT,
+  [cantidad] INT,
+  [fecha_detalle] datetime
+)
+GO
 
-Table token_acceso {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT [not null] // Referencia a la tabla de usuario
-    token VARCHAR(500) [not null]
-    fecha_emision TIMESTAMP [default: `current_timestamp`]
-    fecha_expiracion TIMESTAMP [not null]
-    estado ENUM('activo', 'revocado') [default: 'activo']
-}
+CREATE TABLE [programa] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [descripcion] varchar(100)
+)
+GO
 
-Table permiso {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    nombre VARCHAR(50) [not null, unique] // Nombre del permiso (e.g., 'crear_usuario', 'ver_donacion', etc.)
-    descripcion TEXT // Descripción del permiso
-}
+CREATE TABLE [servicio] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [descripcion] varchar(100)
+)
+GO
 
-Table rol_permiso {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    rol_id INT [not null] // Referencia a la tabla de rol
-    permiso_id INT [not null] // Referencia a la tabla de permiso
-}
+CREATE TABLE [token_acceso] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [usuario_id] INT NOT NULL,
+  [token] VARCHAR(500) NOT NULL,
+  [fecha_emision] datetime,
+  [fecha_expiracion] datetime NOT NULL,
+  [estado] INT NOT NULL
+)
+GO
 
-Table contacto {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT // Referencia a la tabla de usuario, puede ser null si es un usuario no registrado
-    nombre_cliente VARCHAR(100) [not null] // Nombre del cliente
-    email_cliente VARCHAR(100) [not null] // Correo electrónico del cliente
-    asunto VARCHAR(100) [not null] // Asunto del mensaje
-    mensaje TEXT [not null] // Contenido del mensaje
-    fecha_envio TIMESTAMP [default: `current_timestamp`] // Fecha en que se envió el mensaje
-}
+CREATE TABLE [permiso] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [nombre] VARCHAR(50) UNIQUE NOT NULL,
+  [descripcion] TEXT
+)
+GO
 
-Table testimonio {
-    id INT [pk, increment] // Llave primaria con auto-incremento
-    usuario_id INT // Referencia a la tabla de usuario, puede ser null si es un usuario no registrado
-    nombre_autor VARCHAR(100) [not null] // Nombre del autor del testimonio
-    contenido TEXT [not null] // Contenido del testimonio
-    fecha_envio TIMESTAMP [default: `current_timestamp`] // Fecha en que se envió el testimonio
-}
+CREATE TABLE [rol_permiso] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [rol_id] INT NOT NULL,
+  [permiso_id] INT NOT NULL
+)
+GO
 
-// Definición de referencias
-Ref: usuario.telefono_id > telefono.id
-Ref: usuario.profesion_id > profesion.id
-Ref: usuario.pais_id > pais.id
-Ref: usuario.direccion_id > direccion.id
-Ref: usuario.sexo_id > sexo.id
-Ref: usuario.rol_id > rol.id
-Ref: donacion.usuario_id > usuario.id
-Ref: detalle_donacion.donacion_id > donacion.id
-Ref: token_acceso.usuario_id > usuario.id
-Ref: rol_permiso.rol_id > rol.id
-Ref: rol_permiso.permiso_id > permiso.id
-Ref: contacto.usuario_id > usuario.id
-Ref: testimonio.usuario_id > usuario.id
+CREATE TABLE [contacto] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [usuario_id] INT,
+  [nombre_cliente] VARCHAR(100) NOT NULL,
+  [email_cliente] VARCHAR(100) NOT NULL,
+  [asunto] VARCHAR(100) NOT NULL,
+  [mensaje] TEXT NOT NULL,
+  [fecha_envio] datetime 
+)
+GO
+
+CREATE TABLE [testimonio] (
+  [id] INT PRIMARY KEY IDENTITY(1, 1),
+  [usuario_id] INT,
+  [nombre_autor] VARCHAR(100) NOT NULL,
+  [contenido] TEXT NOT NULL,
+  [fecha_envio] datetime 
+)
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([telefonoTipo_id]) REFERENCES [telefonoTipo] ([id])
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([profesion_id]) REFERENCES [profesion] ([id])
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([pais_id]) REFERENCES [pais] ([id])
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([direccion_id]) REFERENCES [direccion] ([id])
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([sexo_id]) REFERENCES [sexo] ([id])
+GO
+
+ALTER TABLE [usuario] ADD FOREIGN KEY ([rol_id]) REFERENCES [rol] ([id])
+GO
+
+ALTER TABLE [donacion] ADD FOREIGN KEY ([usuario_id]) REFERENCES [usuario] ([id])
+GO
+
+ALTER TABLE [detalle_donacion] ADD FOREIGN KEY ([donacion_id]) REFERENCES [donacion] ([id])
+GO
+
+ALTER TABLE [token_acceso] ADD FOREIGN KEY ([usuario_id]) REFERENCES [usuario] ([id])
+GO
+
+ALTER TABLE [rol_permiso] ADD FOREIGN KEY ([rol_id]) REFERENCES [rol] ([id])
+GO
+
+ALTER TABLE [rol_permiso] ADD FOREIGN KEY ([permiso_id]) REFERENCES [permiso] ([id])
+GO
+
+ALTER TABLE [contacto] ADD FOREIGN KEY ([usuario_id]) REFERENCES [usuario] ([id])
+GO
+
+ALTER TABLE [testimonio] ADD FOREIGN KEY ([usuario_id]) REFERENCES [usuario] ([id])
+GO
+
+ALTER TABLE [detalle_donacion] ADD FOREIGN KEY ([id_programa]) REFERENCES [programa] ([id])
+GO
+
+ALTER TABLE [detalle_donacion] ADD FOREIGN KEY ([tipo_servicio]) REFERENCES [servicio] ([id])
+GO
