@@ -91,6 +91,24 @@ Table rol_permiso {
     permiso_id INT [not null] // Referencia a la tabla de permiso
 }
 
+Table contacto {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    usuario_id INT // Referencia a la tabla de usuario, puede ser null si es un usuario no registrado
+    nombre_cliente VARCHAR(100) [not null] // Nombre del cliente
+    email_cliente VARCHAR(100) [not null] // Correo electrónico del cliente
+    asunto VARCHAR(100) [not null] // Asunto del mensaje
+    mensaje TEXT [not null] // Contenido del mensaje
+    fecha_envio TIMESTAMP [default: `current_timestamp`] // Fecha en que se envió el mensaje
+}
+
+Table testimonio {
+    id INT [pk, increment] // Llave primaria con auto-incremento
+    usuario_id INT // Referencia a la tabla de usuario, puede ser null si es un usuario no registrado
+    nombre_autor VARCHAR(100) [not null] // Nombre del autor del testimonio
+    contenido TEXT [not null] // Contenido del testimonio
+    fecha_envio TIMESTAMP [default: `current_timestamp`] // Fecha en que se envió el testimonio
+}
+
 // Definición de referencias
 Ref: usuario.numero_id > telefono.id
 Ref: usuario.profesion_id > profesion.id
@@ -104,3 +122,5 @@ Ref: detalle_donacion.donacion_id > donacion.id
 Ref: token_acceso.usuario_id > usuario.id
 Ref: rol_permiso.rol_id > rol.id
 Ref: rol_permiso.permiso_id > permiso.id
+Ref: contacto.usuario_id > usuario.id
+Ref: testimonio.usuario_id > usuario.id
